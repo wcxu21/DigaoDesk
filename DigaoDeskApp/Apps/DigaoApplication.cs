@@ -36,24 +36,10 @@ namespace DigaoDeskApp
             return Name;
         }
 
-        public string Status
-        {
-            get
-            {
-                return Running ? Vars.Lang.AppStatus_Running : Vars.Lang.AppStatus_Stoped;
-            }                
-        }
+        public string Status => Running ? Vars.Lang.AppStatus_Running : Vars.Lang.AppStatus_Stoped;
 
         private DateTime? _startTime;
-        public string StartTime 
-        {
-            get
-            {
-                if (_startTime == null) return null;
-
-                return _startTime.Value.ToString(Vars.DATETIME_FMT);
-            }
-        }
+        public string StartTime => _startTime?.ToString(Vars.DATETIME_FMT);
 
         public string RunningTime
         {
@@ -81,21 +67,9 @@ namespace DigaoDeskApp
         }
 
         private bool _lastLogIsError;
-        public string LogHealth
-        {
-            get
-            {
-                return _lastLogIsError ? "ERROR" : "OK"; //reading bool is native thread safe
-            }
-        }
+        public string LogHealth => _lastLogIsError ? "ERROR" : "OK"; //reading bool is native thread safe
 
-        public string LogLines
-        {
-            get
-            {
-                return GetLogCount().ToString();
-            }
-        }
+        public string LogLines => GetLogCount().ToString();
         public string LogSize
         {
             get
@@ -179,7 +153,7 @@ namespace DigaoDeskApp
             }
         }
 
-        public bool IsPendingLog => _pendingLog; //reading bool is native thread safe
+        public bool IsPendingLog() => _pendingLog; //reading bool is native thread safe
 
         public bool Running;
         private bool _stopping;

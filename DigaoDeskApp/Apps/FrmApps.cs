@@ -447,7 +447,7 @@ namespace DigaoDeskApp
             }
             else if (Utils.IsSameGridColumn(col, colLastLogTime))
             {
-                img = app.IsPendingLog ? Resources.app_grid_unread : Resources.app_grid_read;
+                img = app.IsPendingLog() ? Resources.app_grid_unread : Resources.app_grid_read;
             }
 
             if (img != null)
