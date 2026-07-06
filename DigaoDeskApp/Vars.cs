@@ -3,14 +3,14 @@
     class Vars
     {
 
-        public const string APP_VERSION = "2.4.0";
+        public const string APP_VERSION = "2.4.1";
         public const string APP_REGKEY = @"SOFTWARE\DigaoDesk";
 
         public const string GITHUB_LINK = "https://github.com/digao-dalpiaz/DigaoDesk";
 
-        private const string DIGAODALPIAZ_WP_LINK = "https://digaodalpiaz.com/wp/";
-        public const string DIGAODALPIAZ_DONATE_LINK = DIGAODALPIAZ_WP_LINK + "donate";
-        public const string DIGAODALPIAZ_SURVEY_LINK = DIGAODALPIAZ_WP_LINK + "digao-desk-usage";
+        private const string DIGAODALPIAZ_LINK = "https://digaodalpiaz.com/";
+        public const string DIGAODALPIAZ_DONATE_LINK = DIGAODALPIAZ_LINK;
+        public const string DIGAODALPIAZ_SURVEY_LINK = DIGAODALPIAZ_LINK + "digao-desk-usage";
 
         public const string DATETIME_FMT = "yyyy-MM-dd HH:mm:ss";
 
