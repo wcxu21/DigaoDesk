@@ -293,7 +293,7 @@ namespace DigaoDeskApp
             btnStop.Enabled = selAndRunning;
             btnStopForced.Enabled = selAndRunning;
 
-            var hasLog = selected && app.Logs.Count > 0;
+            var hasLog = selected && app.GetLogCount() > 0;
             btnFindLog.Enabled = hasLog;
             btnClearLog.Enabled = hasLog;
 
@@ -340,16 +340,14 @@ namespace DigaoDeskApp
 
         private void AddRemainingLog(DigaoApplication app)
         {
-            if (app.Logs.Count==0 || _lastLogRecord == app.Logs.Last()) return; //everything already sync
+            var lst = app.GetPendingLog(_lastLogRecord);
+            if (lst.Length == 0) return;
 
             var alreadyBottom = edLog.SelectionStart == edLog.TextLength;
 
             edLog.SuspendPainting();
-            try
+            try 
             {
-                var nextIdx = app.Logs.IndexOf(_lastLogRecord) + 1;
-                var lst = app.Logs.Take(new Range(nextIdx, app.Logs.Count)).ToList(); //converting to List to ensure a new locked list while adding lines into RichText
-
                 foreach (var log in lst)
                 {
                     if (Vars.Config.Theme.ShowTimestamp)
@@ -380,8 +378,6 @@ namespace DigaoDeskApp
             {
                 edLog.ResumePainting(!alreadyBottom);
             }
-
-            app.PendingLog = false;
         }
 
         private static Color LogTypeToColor(DigaoApplication.LogType type)
@@ -451,7 +447,7 @@ namespace DigaoDeskApp
             }
             else if (Utils.IsSameGridColumn(col, colLastLogTime))
             {
-                img = app.PendingLog ? Resources.app_grid_unread : Resources.app_grid_read;
+                img = app.IsPendingLog ? Resources.app_grid_unread : Resources.app_grid_read;
             }
 
             if (img != null)

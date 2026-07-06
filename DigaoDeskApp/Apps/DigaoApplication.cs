@@ -67,14 +67,25 @@ namespace DigaoDeskApp
             }
         }
 
-        public string LastLogTime { get; set; }
+        private DateTime? _lastLogTime;
+
+        public string LastLogTime
+        {
+            get
+            {
+                lock (_logs)
+                {
+                    return _lastLogTime?.ToString(Vars.DATETIME_FMT);
+                }
+            }
+        }
 
         private bool _lastLogIsError;
         public string LogHealth
         {
             get
             {
-                return _lastLogIsError ? "ERROR" : "OK";
+                return _lastLogIsError ? "ERROR" : "OK"; //reading bool is native thread safe
             }
         }
 
@@ -82,14 +93,17 @@ namespace DigaoDeskApp
         {
             get
             {
-                return Logs.Count.ToString();
+                return GetLogCount().ToString();
             }
         }
         public string LogSize
         {
             get
             {
-                return string.Format("{0}", _logSize);
+                lock (_logs)
+                {
+                    return string.Format("{0}", _logSize);
+                }
             }
         }
 
@@ -130,18 +144,42 @@ namespace DigaoDeskApp
             public LogType Type;
         }
 
-        public SynchronizedCollection<LogRecord> Logs = [];
+        private readonly List<LogRecord> _logs = [];
         private long _logSize;
-        public bool PendingLog;
+        private bool _pendingLog;
 
         public void ClearLog()
         {
-            Logs.Clear();
-            _logSize = 0;
+            lock (_logs)
+            {
+                _logs.Clear();
+                _logSize = 0;
 
-            LastLogTime = null;
-            _lastLogIsError = false;
+                _lastLogTime = null;
+                _lastLogIsError = false;
+            }
         }
+
+        public int GetLogCount()
+        {
+            lock (_logs)
+            {
+                return _logs.Count;
+            }
+        }
+
+        public LogRecord[] GetPendingLog(LogRecord onlyAfterThis)
+        {
+            lock (_logs)
+            {
+                _pendingLog = false;
+
+                var nextIdx = (onlyAfterThis != null ? _logs.IndexOf(onlyAfterThis) : -1) + 1;
+                return [.. _logs.Take(new Range(nextIdx, _logs.Count))];
+            }
+        }
+
+        public bool IsPendingLog => _pendingLog; //reading bool is native thread safe
 
         public bool Running;
         private bool _stopping;
@@ -372,21 +410,25 @@ namespace DigaoDeskApp
             {
                 r.Type = LogType.INFO;
             }
-            Logs.Add(r);
-            Interlocked.Add(ref _logSize, r.Size);
 
-            while (Logs.Count>1 && _logSize > Vars.Config.Apps.MaxLogSize)
+            lock (_logs)
             {
-                Interlocked.Add(ref _logSize, -Logs[0].Size);
-                Logs.RemoveAt(0);
-            }
+                _logs.Add(r);
+                _logSize += r.Size;
 
-            LastLogTime = r.Timestamp.ToString(Vars.DATETIME_FMT);
-            _lastLogIsError = error;
+                while (_logs.Count > 0 && _logSize > Vars.Config.Apps.MaxLogSize)
+                {
+                    _logSize -= _logs[0].Size;
+                    _logs.RemoveAt(0);
+                }
 
-            if (Vars.FrmAppsObj == null || Vars.FrmAppsObj.GetSelApp() != this)
-            {
-                PendingLog = true;
+                _lastLogTime = r.Timestamp;
+                _lastLogIsError = error;
+
+                if (Vars.FrmAppsObj == null || Vars.FrmAppsObj.GetSelApp() != this)
+                {
+                    _pendingLog = true;
+                }
             }
 
             Vars.FrmMainObj.UpdateTrayIcon();
