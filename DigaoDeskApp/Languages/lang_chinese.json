@@ -1,7 +1,7 @@
 ﻿{
   "AlreadyRunningMessage": "Digao Desk 已经运行！",
   "MenuVersion": "版本 {0}",
-  "MenuDonate": "Donate",
+  "MenuDonate": "捐赠",
   "MenuApplications": "应用程序",
   "MenuGitRepositories": "Git 存储库",
   "MenuSettings": "设置",
@@ -331,7 +331,7 @@
   "AppLog_ErrorTerminating": "终止进程错误 \"{0}\": {1}",
   "AppLog_TcpPortInUse": "TCP 端口 {0} 已在使用中",
   "AppLog_FileNotInPath": "在任何 PATH 环境变量中都找不到文件 {0}",
-  "AppLog_Restarting": "Restarting process in {0} second(s)",
+  "AppLog_Restarting": "将在 {0} 秒后重启进程",
 
   "AppTerminatedBalloonTitle": "进程已停止",
   "AppTerminatedBalloonMsg": "应用程序 \"{0}\" 已停止！",
@@ -344,8 +344,8 @@
   "AppEditor_Title_New": "新建应用程序",
   "AppEditor_Title_Edit": "编辑应用程序",
 
-  "AppEditor_TabGeneral": "General",
-  "AppEditor_TabMore": "More",
+  "AppEditor_TabGeneral": "常规",
+  "AppEditor_TabMore": "更多",
 
   "AppEditor_AppName": "应用程序名称",
   "AppEditor_CmdLine": "命令行",
@@ -368,7 +368,7 @@
   "Apps_Delete": "删除",
   "Apps_Reorder": "重新排序",
   "Apps_DownloadDefs": "下载定义",
-  "Apps_Filter": "过滤器",
+  "Apps_Filter": "筛选器",
   "Apps_Filter_All": "所有应用程序",
   "Apps_Filter_Running": "仅正在运行",
   "Apps_Filter_Stopped": "仅已停止",
